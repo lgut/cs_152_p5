@@ -1,0 +1,55 @@
+import org.gradle.plugins.ide.eclipse.model.AccessRule
+
+buildscript {
+    dependencies {
+        classpath group: 'de.dynamicfiles.projects.gradle.plugins', name: 'javafx-gradle-plugin', version: '8.8.2'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+// Apply the java plugin to add support for Java
+apply plugin: 'java'
+// Apply the application plugin to add support for building an application
+apply plugin: 'application'
+apply plugin: 'javafx-gradle-plugin'
+apply plugin: 'eclipse'
+
+eclipse {
+    classpath {
+        file {
+            whenMerged {
+                def jre = entries.find { it.path.contains 'org.eclipse.jdt.launching.JRE_CONTAINER' }
+                jre.accessRules.add(new AccessRule('0', 'javafx/**'))
+                jre.accessRules.add(new AccessRule('0', 'com/sum/javafx/**'))
+            }
+        }
+    }
+}
+
+group 'cs152'
+mainClassName = 'P5'
+
+jfx {
+    // minimal requirement for jfxJar-task
+    mainClass = 'P5'
+    // minimal requirement for jfxNative-task
+    vendor = 'cs152'
+}
+
+//In this section you declare where to find the dependencies of your project
+repositories {
+    // Use jcenter for resolving your dependencies.
+    // You can declare any Maven/Ivy/file repository here.
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    // This dependency is found on compile classpath of this component and consumers.
+    compile 'com.google.guava:guava:23.0'
+    // Use JUnit test framework
+    testCompile 'junit:junit:4.12'
+}
